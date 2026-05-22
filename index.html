@@ -2,8 +2,8 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>珍奶大亨 2.0 - 帝國崛起</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>珍奶大亨 2.0 - 手機優化版</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -27,6 +27,17 @@
         h1 { text-align: center; color: #8c6239; margin-bottom: 5px; }
         .subtitle { text-align: center; color: #b1977a; margin-bottom: 25px; font-size: 14px; }
 
+        /* 排行榜區塊 */
+        .leaderboard {
+            background-color: #f8f9fa;
+            border: 1px dashed #ccc;
+            border-radius: 10px;
+            padding: 10px 15px;
+            margin-bottom: 20px;
+            font-size: 13px;
+        }
+        .leaderboard h3 { margin: 0 0 5px 0; color: #6c757d; display: flex; justify-content: space-between;}
+
         /* 儀表板 */
         .dashboard {
             background-color: #fff9f2;
@@ -41,23 +52,16 @@
         .stat-box h3 { margin: 0; font-size: 14px; color: #8c6239; }
         .stat-box p { margin: 5px 0 0 0; font-size: 24px; font-weight: bold; color: #d4a373; }
 
-        /* 排行榜區塊 */
-        .leaderboard {
-            background-color: #f8f9fa;
-            border: 1px dashed #ccc;
-            border-radius: 10px;
-            padding: 10px 15px;
-            margin-bottom: 20px;
-            font-size: 13px;
-        }
-        .leaderboard h3 { margin: 0 0 5px 0; color: #6c757d; display: flex; justify-content: space-between;}
-
         /* 主要動作區 */
         .action-section { text-align: center; margin-bottom: 30px; }
+        
         .main-btn {
             background-color: #8c6239; color: white; border: none; padding: 15px 40px;
             font-size: 18px; font-weight: bold; border-radius: 50px; cursor: pointer;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: transform 0.1s, background-color 0.2s;
+            
+            /* 💡 優化：強制手機瀏覽器忽略「雙擊放大」手勢，點擊反應更靈敏 */
+            touch-action: manipulation; 
         }
         .main-btn:hover { background-color: #734d2a; }
         .main-btn:active { transform: scale(0.95); }
@@ -71,12 +75,13 @@
         .upgrade-info h4 { margin: 0; font-size: 16px; color: #4a3f35; }
         .upgrade-info p { margin: 3px 0 0 0; font-size: 12px; color: #888; }
         
-        /* 特別幫高級項目換顏色 */
         .premium { border: 1px solid #ffe3a8; background: #fffdf9; }
         .premium h4 { color: #b7791f; }
 
         .upgrade-btn {
             background-color: #e6ccb2; color: #4a3f35; border: none; padding: 8px 15px; font-weight: bold; border-radius: 5px; cursor: pointer; transition: 0.2s;
+            /* 讓升級按鈕也防止誤觸放大 */
+            touch-action: manipulation; 
         }
         .upgrade-btn:hover:not(:disabled) { background-color: #ddb892; }
         .upgrade-btn:disabled { background-color: #e0e0e0; color: #a0a0a0; cursor: not-allowed; }
@@ -88,7 +93,7 @@
 
 <div class="game-container">
     <h1>🧋 珍奶大亨 2.0</h1>
-    <div class="subtitle">企業擴張與在地榮譽榜</div>
+    <div class="subtitle">企業擴張與在地榮譽榜 (手機流暢版)</div>
 
     <div class="leaderboard">
         <h3>🏆 本店歷史最高紀錄 <button onclick="resetHighScore()" style="font-size:10px; cursor:pointer;">重設</button></h3>
@@ -147,7 +152,7 @@
         <div class="upgrade-item premium">
             <div class="upgrade-info">
                 <h4>進駐信義區黃金店面 (<span id="shop-level">0</span>)</h4>
-                <p>曝光度大增！【全店總被動收入直接 $\times 2$】</p>
+                <p>曝光度大增！【全店總被動收入直接乘 2】</p>
             </div>
             <button class="upgrade-btn" id="buy-shop">花費: $8000</button>
         </div>
@@ -162,13 +167,11 @@
         staffCount: 0,  staffCost: 15,
         recipeLevel: 0, recipeCost: 50,
         machineCount: 0, machineCost: 200,
-        // 2.0 新增數據
         managerCount: 0, managerCost: 1500,
         shopLevel: 0,    shopCost: 8000,
         highScore: 0
     };
 
-    // 讀取以前存下來的最高分數
     if(localStorage.getItem('tea_high_score')) {
         gameState.highScore = parseInt(localStorage.getItem('tea_high_score'));
     }
@@ -186,18 +189,14 @@
     const elRecipeLevel = document.getElementById('recipe-level');
     const elBuyMachine = document.getElementById('buy-machine');
     const elMachineCount = document.getElementById('machine-count');
-    // 2.0 DOM
     const elBuyManager = document.getElementById('buy-manager');
     const elManagerCount = document.getElementById('manager-count');
     const elBuyShop = document.getElementById('buy-shop');
     const elShopLevel = document.getElementById('shop-level');
 
     /* --- 核心邏輯 --- */
-
-    // 計算總 GPS (加入店面倍率系統)
     function calculateGPS() {
         let baseGps = (gameState.staffCount * 1) + (gameState.machineCount * 15) + (gameState.managerCount * 120);
-        // 每一級黃金店面，收益就乘 2
         let multiplier = Math.pow(2, gameState.shopLevel); 
         return baseGps * multiplier;
     }
@@ -207,13 +206,11 @@
         elGps.innerText = calculateGPS();
         elHighScore.innerText = Math.floor(gameState.highScore);
 
-        // 檢查並更新最高紀錄
         if (gameState.money > gameState.highScore) {
             gameState.highScore = gameState.money;
             localStorage.setItem('tea_high_score', gameState.highScore);
         }
 
-        // 按鈕與價格更新
         elStaffCount.innerText = gameState.staffCount;
         elBuyStaff.innerText = `花費: $${gameState.staffCost}`;
         elBuyStaff.disabled = gameState.money < gameState.staffCost;
@@ -226,7 +223,6 @@
         elBuyMachine.innerText = `花費: $${gameState.machineCost}`;
         elBuyMachine.disabled = gameState.money < gameState.machineCost;
 
-        // 2.0 新按鈕更新
         elManagerCount.innerText = gameState.managerCount;
         elBuyManager.innerText = `花費: $${gameState.managerCost}`;
         elBuyManager.disabled = gameState.money < gameState.managerCost;
@@ -276,7 +272,6 @@
         }
     });
 
-    // 2.0 新增購買事件
     elBuyManager.addEventListener('click', () => {
         if (gameState.money >= gameState.managerCost) {
             gameState.money -= gameState.managerCost;
@@ -291,13 +286,12 @@
         if (gameState.money >= gameState.shopCost) {
             gameState.money -= gameState.shopCost;
             gameState.shopLevel++;
-            gameState.shopCost = Math.round(gameState.shopCost * 2.5); // 高級項目價格通膨更快
+            gameState.shopCost = Math.round(gameState.shopCost * 2.5);
             showLog("🏢 成功進駐信義區黃金地段！全店營業額翻倍！");
             updateUI();
         }
     });
 
-    // 重設分數功能
     window.resetHighScore = function() {
         if(confirm("確定要清除最高紀錄嗎？")) {
             gameState.highScore = 0;
