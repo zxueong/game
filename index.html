@@ -2,13 +2,12 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>珍奶大亨 3.0 </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>珍奶大亨 6.0 </title>
     <style>
-        /* 全域基礎優化：確保手機上排版不會爆開 */
         * {
             box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent; /* 移除手機點擊時的醜藍色陰影 */
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
@@ -23,7 +22,7 @@
 
         .game-container {
             width: 100%;
-            max-width: 500px; /* 縮小容器最大寬度，讓它在手機上更集中 */
+            max-width: 480px;
             background: white;
             padding: 15px;
             border-radius: 15px;
@@ -59,70 +58,70 @@
         .stat-box p { margin: 5px 0 0 0; font-size: 24px; font-weight: bold; color: #d4a373; }
 
         /* 主要動作區 */
-        .action-section { 
-            text-align: center; 
-            margin-bottom: 20px; 
+        .action-section { 
+            text-align: center; 
+            margin-bottom: 25px; 
             width: 100%;
         }
-        
-        /* 💡 終極進化：真正適合手機瘋狂連點的巨大按鈕 */
+        
+        /* 💡 終極暴力放大：高達 120 像素、字體 32 像素的巨無霸按鈕 */
         .main-btn {
-            width: 100%; /* 撐滿整個容器寬度，完全不怕點歪 */
-            background-color: #8c6239; 
-            color: white; 
-            border: none; 
-            padding: 35px 20px; /* 超厚內距，按鈕面積直接翻倍 */
-            font-size: 28px; /* 超大字體，讀取超清晰 */
-            font-weight: bold; 
-            border-radius: 20px; /* 改為方圓角，增加可點擊視覺面積 */
+            width: 100%; 
+            height: 120px; /* 強制規定高度，絕對縮不小 */
+            background-color: #8c6239; 
+            color: white; 
+            border: none; 
+            font-size: 32px; /* 巨量字體 */
+            font-weight: bold; 
+            border-radius: 25px; 
             cursor: pointer;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.2); 
+            box-shadow: 0 10px 20px rgba(140, 98, 57, 0.4); 
             transition: transform 0.05s;
-            
-            /* 解決手機連點放大、反藍、延遲問題三劍客 */
-            touch-action: manipulation; 
+            
+            touch-action: manipulation; 
             -webkit-user-select: none;
-            user-select: none; 
+            user-select: none; 
         }
-        .main-btn:active { 
-            transform: scale(0.96); /* 點擊時有明顯的下壓回饋感 */
-            background-color: #5c3d21; 
+        .main-btn:active { 
+            transform: scale(0.95); 
+            background-color: #5c3d21; 
         }
 
         /* 升級面板 */
-        .panel-title { font-size: 16px; font-weight: bold; border-bottom: 2px solid #e1d3c1; padding-bottom: 5px; margin: 15px 0 10px 0; color: #634832; }
+        .panel-title { font-size: 16px; font-weight: bold; border-bottom: 2px solid #e1d3c1; padding-bottom: 5px; margin: 20px 0 10px 0; color: #634832; }
         .upgrade-item {
             display: flex; justify-content: space-between; align-items: center;
-            background: #faf8f5; padding: 12px 10px; border-radius: 8px; margin-bottom: 8px; border: 1px solid #eee;
+            background: #faf8f5; padding: 15px 12px; border-radius: 10px; margin-bottom: 10px; border: 1px solid #eee;
         }
-        .upgrade-info h4 { margin: 0; font-size: 14px; color: #4a3f35; }
-        .upgrade-info p { margin: 3px 0 0 0; font-size: 11px; color: #888; }
-        
+        .upgrade-info h4 { margin: 0; font-size: 15px; color: #4a3f35; }
+        .upgrade-info p { margin: 4px 0 0 0; font-size: 12px; color: #888; }
+        
         .premium { border: 1px solid #ffe3a8; background: #fffdf9; }
         .premium h4 { color: #b7791f; }
 
-        /* 升級按鈕同步加大，在手機上更好點擊 */
+        /* 💡 購買/升級按鈕也一併暴力加大，大幅增加高度和寬度，極好按 */
         .upgrade-btn {
-            background-color: #e6ccb2; color: #4a3f35; border: none; 
-            padding: 15px 12px; font-size: 13px; font-weight: bold; border-radius: 6px; cursor: pointer;
-            min-width: 95px;
-            touch-action: manipulation; 
+            background-color: #e6ccb2; color: #4a3f35; border: none; 
+            height: 50px; /* 高度增高 */
+            min-width: 110px; /* 寬度加寬 */
+            font-size: 15px; font-weight: bold; border-radius: 8px; cursor: pointer;
+            touch-action: manipulation; 
             -webkit-user-select: none; user-select: none;
         }
         .upgrade-btn:hover:not(:disabled) { background-color: #ddb892; }
         .upgrade-btn:disabled { background-color: #e0e0e0; color: #a0a0a0; cursor: not-allowed; }
 
-        #log-msg { text-align: center; color: #7f5539; font-weight: bold; height: 20px; margin-bottom: 10px; font-size: 13px; }
+        #log-msg { text-align: center; color: #7f5539; font-weight: bold; height: 20px; margin-bottom: 10px; font-size: 14px; }
     </style>
 </head>
 <body>
 
 <div class="game-container">
     <h1>🧋 珍奶大亨 2.0</h1>
-    <div class="subtitle">企業擴張與在地榮譽榜 (真·手機適配版)</div>
+    <div class="subtitle">企業擴張與在地榮譽榜 (巨無霸按鈕版)</div>
 
     <div class="leaderboard">
-        <h3>🏆 本店歷史最高紀錄 <button onclick="resetHighScore()" style="font-size:11px; cursor:pointer; padding:2px 6px;">重設</button></h3>
+        <h3>🏆 本店歷史最高紀錄 <button onclick="resetHighScore()" style="font-size:12px; cursor:pointer; padding:4px 8px;">重設</button></h3>
         <div>最高總資產紀錄：$<span id="high-score">0</span></div>
     </div>
 
@@ -140,7 +139,7 @@
     <div id="log-msg">店面營運中...</div>
 
     <div class="action-section">
-        <button class="main-btn" id="click-btn">🧋 手動搖飲料</button>
+        <button class="main-btn" id="click-btn">🧋 瘋狂手動搖飲料</button>
     </div>
 
     <div class="panel-title">🏪 基礎營運與基礎升級</div>
@@ -207,7 +206,7 @@
     const elGps = document.getElementById('gps');
     const elLog = document.getElementById('log-msg');
     const elHighScore = document.getElementById('high-score');
-    
+    
     const elClickBtn = document.getElementById('click-btn');
     const elBuyStaff = document.getElementById('buy-staff');
     const elStaffCount = document.getElementById('staff-count');
@@ -223,7 +222,7 @@
     /* --- 核心邏輯 --- */
     function calculateGPS() {
         let baseGps = (gameState.staffCount * 1) + (gameState.machineCount * 15) + (gameState.managerCount * 120);
-        let multiplier = Math.pow(2, gameState.shopLevel); 
+        let multiplier = Math.pow(2, gameState.shopLevel); 
         return baseGps * multiplier;
     }
 
