@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>珍奶大亨 2.0 - 手機優化版</title>
+    <title>珍奶大亨 3.0 </title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f5efe6;
             color: #4a3f35;
             margin: 0;
-            padding: 20px;
+            padding: 15px;
             display: flex;
             justify-content: center;
         }
@@ -19,13 +19,14 @@
             width: 100%;
             max-width: 650px;
             background: white;
-            padding: 25px;
+            padding: 20px;
             border-radius: 15px;
             box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            box-sizing: border-box;
         }
 
-        h1 { text-align: center; color: #8c6239; margin-bottom: 5px; }
-        .subtitle { text-align: center; color: #b1977a; margin-bottom: 25px; font-size: 14px; }
+        h1 { text-align: center; color: #8c6239; margin-bottom: 5px; font-size: 28px; }
+        .subtitle { text-align: center; color: #b1977a; margin-bottom: 20px; font-size: 13px; }
 
         /* 排行榜區塊 */
         .leaderboard {
@@ -47,24 +48,41 @@
             display: flex;
             justify-content: space-around;
             text-align: center;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
-        .stat-box h3 { margin: 0; font-size: 14px; color: #8c6239; }
-        .stat-box p { margin: 5px 0 0 0; font-size: 24px; font-weight: bold; color: #d4a373; }
+        .stat-box h3 { margin: 0; font-size: 13px; color: #8c6239; }
+        .stat-box p { margin: 5px 0 0 0; font-size: 26px; font-weight: bold; color: #d4a373; }
 
         /* 主要動作區 */
-        .action-section { text-align: center; margin-bottom: 30px; }
+        .action-section { 
+            text-align: center; 
+            margin-bottom: 25px; 
+        }
         
+        /* 💡 這裡把手搖按鈕全面放大，並加入防滑、防反白設計 */
         .main-btn {
-            background-color: #8c6239; color: white; border: none; padding: 15px 40px;
-            font-size: 18px; font-weight: bold; border-radius: 50px; cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: transform 0.1s, background-color 0.2s;
-            
-            /* 💡 優化：強制手機瀏覽器忽略「雙擊放大」手勢，點擊反應更靈敏 */
+            width: 90%; /* 讓按鈕寬度佔滿畫面的 90% */
+            max-width: 400px;
+            background-color: #8c6239; 
+            color: white; 
+            border: none; 
+            padding: 22px 20px; /* 大幅增加上下加厚寬度 */
+            font-size: 22px; /* 放大字體 */
+            font-weight: bold; 
+            border-radius: 50px; 
+            cursor: pointer;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15); 
+            transition: transform 0.05s, background-color 0.2s;
             touch-action: manipulation; 
+            
+            /* 💡 防止連續快速點擊時，按鈕文字變成藍色選取狀態 */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none; 
         }
         .main-btn:hover { background-color: #734d2a; }
-        .main-btn:active { transform: scale(0.95); }
+        .main-btn:active { transform: scale(0.95); background-color: #5c3d21; }
 
         /* 升級面板 */
         .panel-title { font-size: 18px; font-weight: bold; border-bottom: 2px solid #e1d3c1; padding-bottom: 5px; margin-bottom: 15px; color: #634832; }
@@ -72,31 +90,33 @@
             display: flex; justify-content: space-between; align-items: center;
             background: #faf8f5; padding: 12px 15px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #eee;
         }
-        .upgrade-info h4 { margin: 0; font-size: 16px; color: #4a3f35; }
+        .upgrade-info h4 { margin: 0; font-size: 15px; color: #4a3f35; }
         .upgrade-info p { margin: 3px 0 0 0; font-size: 12px; color: #888; }
         
         .premium { border: 1px solid #ffe3a8; background: #fffdf9; }
         .premium h4 { color: #b7791f; }
 
+        /* 升級按鈕同步稍微加大加厚，更好按 */
         .upgrade-btn {
-            background-color: #e6ccb2; color: #4a3f35; border: none; padding: 8px 15px; font-weight: bold; border-radius: 5px; cursor: pointer; transition: 0.2s;
-            /* 讓升級按鈕也防止誤觸放大 */
+            background-color: #e6ccb2; color: #4a3f35; border: none; 
+            padding: 12px 18px; font-size: 14px; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.2s;
             touch-action: manipulation; 
+            -webkit-user-select: none; user-select: none;
         }
         .upgrade-btn:hover:not(:disabled) { background-color: #ddb892; }
         .upgrade-btn:disabled { background-color: #e0e0e0; color: #a0a0a0; cursor: not-allowed; }
 
-        #log-msg { text-align: center; color: #7f5539; font-weight: bold; height: 20px; margin-bottom: 15px; }
+        #log-msg { text-align: center; color: #7f5539; font-weight: bold; height: 20px; margin-bottom: 15px; font-size: 14px; }
     </style>
 </head>
 <body>
 
 <div class="game-container">
     <h1>🧋 珍奶大亨 2.0</h1>
-    <div class="subtitle">企業擴張與在地榮譽榜 (手機流暢版)</div>
+    <div class="subtitle">企業擴張與在地榮譽榜 (大按鈕舒適版)</div>
 
     <div class="leaderboard">
-        <h3>🏆 本店歷史最高紀錄 <button onclick="resetHighScore()" style="font-size:10px; cursor:pointer;">重設</button></h3>
+        <h3>🏆 本店歷史最高紀錄 <button onclick="resetHighScore()" style="font-size:10px; cursor:pointer; padding:2px 5px;">重設</button></h3>
         <div>最高總資產紀錄：$<span id="high-score">0</span></div>
     </div>
 
