@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>珍奶大亨 - 模擬經營遊戲</title>
+    <style>
+        /* 基礎樣式設計 */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5efe6;
+            color: #4a3f35;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .game-container {
+            width: 100%;
+            max-width: 600px;
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #8c6239;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #b1977a;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+
+        /* 儀表板 */
+        .dashboard {
+            background-color: #fff9f2;
+            border: 2px solid #e1d3c1;
+            border-radius: 10px;
+            padding: 15px;
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .stat-box h3 {
+            margin: 0;
+            font-size: 14px;
+            color: #8c6239;
+        }
+
+        .stat-box p {
+            margin: 5px 0 0 0;
+            font-size: 24px;
+            font-weight: bold;
+            color: #d4a373;
+        }
+
+        /* 主要動作區 */
+        .action-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .main-btn {
+            background-color: #8c6239;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.1s, background-color 0.2s;
+        }
+
+        .main-btn:hover {
+            background-color: #734d2a;
+        }
+
+        .main-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* 升級面板 */
+        .panel-title {
+            font-size: 18px;
+            font-weight: bold;
+            border-bottom: 2px solid #e1d3c1;
+            padding-bottom: 5px;
+            margin-bottom: 15px;
+            color: #634832;
+        }
+
+        .upgrade-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #faf8f5;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #eee;
+        }
+
+        .upgrade-info h4 {
+            margin: 0;
+            font-size: 16px;
+            color: #4a3f35;
+        }
+
+        .upgrade-info p {
+            margin: 3px 0 0 0;
+            font-size: 12px;
+            color: #888;
+        }
+
+        .upgrade-btn {
+            background-color: #e6ccb2;
+            color: #4a3f35;
+            border: none;
+            padding: 8px 15px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .upgrade-btn:hover:not(:disabled) {
+            background-color: #ddb892;
+        }
+
+        .upgrade-btn:disabled {
+            background-color: #e0e0e0;
+            color: #a0a0a0;
+            cursor: not-allowed;
+        }
+
+        /* 訊息提示 */
+        #log-msg {
+            text-align: center;
+            color: #7f5539;
+            font-weight: bold;
+            height: 20px;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="game-container">
+    <h1>🧋 珍奶大亨</h1>
+    <div class="subtitle">從地攤到連鎖飲料帝國的奮鬥史</div>
+
+    <div class="dashboard">
+        <div class="stat-box">
+            <h3>目前資金</h3>
+            <p>$<span id="money">0</span></p>
+        </div>
+        <div class="stat-box">
+            <h3>每秒被動收入 (GPS)</h3>
+            <p>$<span id="gps">0</span></p>
+        </div>
+    </div>
+
+    <div id="log-msg">歡迎來到珍奶店！點擊下方按鈕開始搖飲料。</div>
+
+    <div class="action-section">
+        <button class="main-btn" id="click-btn">🧋 手動搖一杯飲料</button>
+    </div>
+
+    <div class="panel-title">🏪 商店與員工雇用</div>
+    
+    <div id="shop-container">
+        <div class="upgrade-item">
+            <div class="upgrade-info">
+                <h4>雇用工讀生 (<span id="staff-count">0</span>)</h4>
+                <p>每秒自動幫你賺 $1</p>
+            </div>
+            <button class="upgrade-btn" id="buy-staff">花費: $15</button>
+        </div>
+
+        <div class="upgrade-item">
+            <div class="upgrade-info">
+                <h4>升級配方：黑糖鮮奶 (<span id="recipe-level">0</span>)</h4>
+                <p>讓每次「手動點擊」的收益 +$5</p>
+            </div>
+            <button class="upgrade-btn" id="buy-recipe">花費: $50</button>
+        </div>
+
+        <div class="upgrade-item">
+            <div class="upgrade-info">
+                <h4>引進自動封口機 (<span id="machine-count">0</span>)</h4>
+                <p>大幅提升自動化效率，每秒賺 $15</p>
+            </div>
+            <button class="upgrade-btn" id="buy-machine">花費: $200</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    /* --- 遊戲數據狀態 (State) --- */
+    let gameState = {
+        money: 0,
+        clickPower: 1,      // 點一下賺多少錢
+        staffCount: 0,      // 工讀生數量
+        staffCost: 15,      // 工讀生初始價格
+        recipeLevel: 0,     // 配方等級
+        recipeCost: 50,     // 配方升級初始價格
+        machineCount: 0,    // 封口機數量
+        machineCost: 200,   // 封口機初始價格
+    };
+
+    /* --- 獲取 DOM 元素 --- */
+    const elMoney = document.getElementById('money');
+    const elGps = document.getElementById('gps');
+    const elLog = document.getElementById('log-msg');
+    const elClickBtn = document.getElementById('click-btn');
+    
+    const elBuyStaff = document.getElementById('buy-staff');
+    const elStaffCount = document.getElementById('staff-count');
+    
+    const elBuyRecipe = document.getElementById('buy-recipe');
+    const elRecipeLevel = document.getElementById('recipe-level');
+    
+    const elBuyMachine = document.getElementById('buy-machine');
+    const elMachineCount = document.getElementById('machine-count');
+
+    /* --- 核心邏輯功能 --- */
+
+    // 計算每秒被動總收入 (Gold Per Second)
+    function calculateGPS() {
+        return (gameState.staffCount * 1) + (gameState.machineCount * 15);
+    }
+
+    // 更新畫面 UI
+    function updateUI() {
+        elMoney.innerText = Math.floor(gameState.money);
+        elGps.innerText = calculateGPS();
+
+        // 更新各個項目的數量與按鈕上的價格
+        elStaffCount.innerText = gameState.staffCount;
+        elBuyStaff.innerText = `花費: $${gameState.staffCost}`;
+        // 錢不夠就禁用按鈕
+        elBuyStaff.disabled = gameState.money < gameState.staffCost;
+
+        elRecipeLevel.innerText = gameState.recipeLevel;
+        elBuyRecipe.innerText = `花費: $${gameState.recipeCost}`;
+        elBuyRecipe.disabled = gameState.money < gameState.recipeCost;
+
+        elMachineCount.innerText = gameState.machineCount;
+        elBuyMachine.innerText = `花費: $${gameState.machineCost}`;
+        elBuyMachine.disabled = gameState.money < gameState.machineCost;
+    }
+
+    // 顯示動態訊息
+    function showLog(text) {
+        elLog.innerText = text;
+    }
+
+    /* --- 玩家互動事件 (Event Listeners) --- */
+
+    // 1. 手動點擊搖飲料
+    elClickBtn.addEventListener('click', () => {
+        gameState.money += gameState.clickPower;
+        showLog(`🧋 賣出一杯飲料，賺了 $${gameState.clickPower}！`);
+        updateUI();
+    });
+
+    // 2. 購買工讀生
+    elBuyStaff.addEventListener('click', () => {
+        if (gameState.money >= gameState.staffCost) {
+            gameState.money -= gameState.staffCost;
+            gameState.staffCount++;
+            // 每次購買後，下一次的售價提高 1.15 倍（經典經營遊戲公式）
+            gameState.staffCost = Math.round(gameState.staffCost * 1.15);
+            showLog("🏪 成功雇用了一名工讀生！");
+            updateUI();
+        }
+    });
+
+    // 3. 升級配方
+    elBuyRecipe.addEventListener('click', () => {
+        if (gameState.money >= gameState.recipeCost) {
+            gameState.money -= gameState.recipeCost;
+            gameState.recipeLevel++;
+            gameState.clickPower += 5; // 手動點擊威力增加
+            gameState.recipeCost = Math.round(gameState.recipeCost * 1.5);
+            showLog("✨ 配方升級！手動搖飲料變更貴了！");
+            updateUI();
+        }
+    });
+
+    // 4. 購買自動封口機
+    elBuyMachine.addEventListener('click', () => {
+        if (gameState.money >= gameState.machineCost) {
+            gameState.money -= gameState.machineCost;
+            gameState.machineCount++;
+            gameState.machineCost = Math.round(gameState.machineCost * 1.2);
+            showLog("🤖 引進自動封口機！產量大幅提升！");
+            updateUI();
+        }
+    });
+
+    /* --- 遊戲主循環 (Game Loop) --- */
+    // 每 100 毫秒 (0.1秒) 執行一次，確保畫面流暢度
+    setInterval(() => {
+        let gps = calculateGPS();
+        if (gps > 0) {
+            // 因為是每 0.1 秒加一次，所以每次加 GPS 的十分之一
+            gameState.money += gps / 10;
+            updateUI();
+        }
+    }, 100);
+
+    // 另外開一個獨立計時器，定時檢查按鈕可用狀態（防止不點擊時按鈕不更新）
+    setInterval(updateUI, 200);
+
+    // 初始化第一次畫面
+    updateUI();
+</script>
+
+</body>
+</html>
